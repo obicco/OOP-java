@@ -1,0 +1,4 @@
+#Student identification information
+ID=226421
+FirstName=BICH
+LastName=OSKAR

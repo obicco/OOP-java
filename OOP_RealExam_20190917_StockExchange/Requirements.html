@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Stock Market</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href=".css.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">Stock Market</h1>
+</div>
+<!--
+> To generate html and pdf use
+> ```bash
+> $ pandoc -s -f markdown+Smart requirements.md -c .css.css -o requirements.html
+> $ pandoc -s -f markdown+Smart requirements.md -o requirements.pdf
+> ```
+-->
+<p>Develop a system that is able to simulate a simplified version of a stock market, for the users to sell and buy the shares.</p>
+<p>All the classes have to be in the package <code>it.polito.oop.stocks</code>. The <em>facade</em> class through which all the operations are performed is <code>StockExchange</code>.</p>
+<p>Class <code>TestApp</code> in the default package contains a synthetic test for the application.</p>
+<p>JDK documentation is accessible through URL <a href="http://softeng.polito.it/courses/docs/api/index.html" class="uri">http://softeng.polito.it/courses/docs/api/index.html</a>.</p>
+<h2 id="r1-stocks">R1: Stocks</h2>
+<p>The shares being exchanged on the stock market are defined using the method <code>defineStocks()</code> that accepts as parameters a list of strings containing the code and the name of the corresponding share. Each share is represented using a string in the following format: <code>&quot;[code]: [name]&quot;</code> (for example <code>&quot;AAPL: Apple&quot;</code>). The method returns number of shares correctly inserted into the system. If a string has a non-valid format, or contains a stock with a code already entered previously, it is ignored.</p>
+<p>Given the code of a share, it is possible to obtain its string representation using the method <code>getStock()</code>. The share is represented using the same string format as the previous method. If the code of the share is not valid, the method should launch an exception <code>StockException</code>.</p>
+<h2 id="r2-users">R2: Users</h2>
+<p>The stock market users are registered using the method <code>registerUser()</code> that accepts as a parameter, the user’s name and returns a unique integer number that is used to identify the registered user.</p>
+<p>Given the user id, it is possible to obtain the corresponding string representation using the method <code>getUser()</code>. The user representation is given as a string in the following format: <code>&quot;[user id]: [name]&quot;</code>. If the provided user id does not correspond to any existing user, the method launches an exception <code>UserException</code>.</p>
+<p>Each user has an associated balance in one currency, for example Euros. Initially, the balance of the new user is equal to zero. A user can add money to their balance through the method <code>addToBalance()</code> that accepts as parameters user id and the amount of money. Both methods launch an exception <code>UserException</code> if the user id is not valid.</p>
+<h2 id="r3-wallet">R3: Wallet</h2>
+<p>Each user has a wallet of previously acquired stocks. The wallet contains a list of stocks and their amount. Initially, the wallet is empty. The user can add to their own wallet the stocks that are in their possession using the method <code>addToWallet()</code>, that accepts as parameters user id, the stock code and the corresponding quantity. If the user id is not valid, the method should launch an exception <code>UserException</code>. If the stock code is not valid, the method should launch an exception <code>StockException</code>. It is assumed that the quantity is always greater than zero. If the stock is already present in the wallet, new quantity has to be added on top of already existing one.</p>
+<p>Given the user id, it is possible to obtain a collection of strings corresponding to the stocks in the user’s wallet using the method <code>getWallet</code>. Each stock in the wallet is represented as a string in the following format: <code>&quot;[code]: [quantity]&quot;</code>. If the user id is not valid, the method should launch an exception <code>UserException</code>.</p>
+<h2 id="r4-negotiation">R4: Negotiation</h2>
+<p>User can put on sale an amount of the stock in their possession using the method <code>addAsk()</code>, which accepts as parameters user id, code of the negotiated stock, the amount to be sold and the minimum price that the user is willing to accept. The stocks put on sale have to be removed from the user’s wallet. If the user id is not valid an exception <code>UserException</code> has to be launched. If the stock code is non-valid, the method should launch <code>StockException</code>. If the amount user wants to sell is not available in their wallet, method should launch an exception <code>WalletException</code>.</p>
+<p>Given a stock, it is possible to obtain a collection of strings corresponding to the currently active selling proposals using the method <code>getBook()</code>, that accepts as parameter the stock code. The selling proposals are represented with a string in a following format: <code>&quot;[user id]: [quantity]@[minimum price]&quot;</code>. The collection is ordered first, based on the increasing minimum price, and then based on the decreasing quantity. If the stock code is not valid , the method launches an exception <code>StockException</code>.</p>
+<p>A user can try to buy a stock using method <code>executeBid()</code>, that accepts as parameters the id of the user that wants to make an offer (bid), the stock code, the wanted quantity and the maximum price it is willing to pay for it.</p>
+<p>If the user id is not valid, the method should launch an exception <code>UserException</code>. If the stock code is not valid, the method should throw an exception <code>StockException</code>. If the user doesn’t have sufficient amount of money to cover the maximum price, which is obtained by multiplying quantity of requested stocks with the maximum price of a stock, the method should launch an exception <code>BalanceException</code>.</p>
+<p>The method should return <code>true</code> if the buying proposal is executed. Otherwise, it should return <code>false</code>. The buying proposal is considered as executed if the number of stocks currently on sale, with the price same or lower than the maximum buying price, is same or higher than the requested quantity. In such case, it is necessary to update the balance of the involved users, add the stocks to the buyer’s wallet, and remove them from the selling proposals.</p>
+<p><strong>Attention:</strong> the total price of the purchase is obtained from the sum of the minimum price multiplied with the quantity put on sale for each considered sale proposal to reach the requested quantity. The selling proposals have to be evaluated in the same order as returned from the method <code>getBook()</code>. For the last considered proposal, effectively bought quantity can be lower than the one on sale: in such case, it is necessary to update the quantity of still available stocks for that selling proposal.</p>
+<h2 id="r5-statistics">R5: Statistics</h2>
+<p>The following methods are defined to collect the statistics:</p>
+<ul>
+<li><p><code>countActiveWallets()</code> returns the number of users that have at least one stock in their wallet.</p></li>
+<li><p><code>countAskedStocks()</code> returns the number of stocks with at least one selling proposal.</p></li>
+<li><p><code>stocksPerUsers()</code> returns a map with entries that have as a key user id, and as a value the number of different stocks they possess (present in their wallet).</p></li>
+</ul>
+</body>
+</html>

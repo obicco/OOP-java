@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Mercato Azionario</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href=".css.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">Mercato Azionario</h1>
+</div>
+<!--
+> To generate html and pdf use
+> ```bash
+> $ pandoc -s -f markdown+Smart requirements.md -c .css.css -o requirements.html
+> $ pandoc -s -f markdown+Smart requirements.md -o requirements.pdf
+> ```
+-->
+<p>Sviluppare un sistema in grado di simulare una versione semplificata di un mercato azionario, dove gli utenti mettono in vendita ed acquistano lotti di titoli.</p>
+<p>Tutte le classi devono essere nel package <code>it.polito.oop.stocks</code>. La classe <em>facade</em> attraverso cui tutte le operazioni sono eseguite è <code>StockExchange</code>.</p>
+<p>La classe <code>TestApp</code> nel default package contiene un sintetico test per l’applicazione.</p>
+<p>La documentazione JDK è accessibile all’URL <a href="http://softeng.polito.it/courses/docs/api/index.html" class="uri">http://softeng.polito.it/courses/docs/api/index.html</a>.</p>
+<h2 id="r1-titoli">R1: Titoli</h2>
+<p>Nel mercato azionario vengono scambiati i titoli definiti attraverso il metodo <code>defineStocks()</code> che accetta come parametri una serie di stringhe contententi il codice ed il nome del titolo. Ogni titolo è rappresentato utilizzando una stringa con il seguente formato: <code>&quot;[codice]: [nome]&quot;</code> (ad esempio <code>&quot;AAPL: Apple&quot;</code>). Il metodo ritorna il numero di titoli correttamente inseriti nel sistema. Se una stringa ha un formato non valido o contiene un titolo avente un codice già inserito in precedenza, è ignorata.</p>
+<p>Dato il codice di un titolo, è possibile ottenere la sua rappresentazione come stringa utilizzando il metodo <code>getStock()</code>. Il titolo è rappresentato utilizzando una stringa con lo stesso formato del metodo precedente. Nel caso in cui il codice del titolo non sia valido, il metodo lancia un’eccezione di <code>StockException</code>.</p>
+<h2 id="r2-utenti">R2: Utenti</h2>
+<p>Gli utenti del mercato azionario vengono registrati utilizzando il metodo <code>registerUser()</code> che accetta come parametro il nome utente e restituisce un numero intero univoco che identifica l’utente registrato.</p>
+<p>Dato l’identificativo dell’utente, è possibile ottenere la corrispondente rappresentazione come stringa utilizzando il metodo <code>getUser()</code>. L’utente è rappresentato utilizzando una stringa con il seguente formato: <code>&quot;[identificativo]: [nome]&quot;</code>. Se l’identificativo fornito non corrisponde ad alcun utente, il metodo lancia un’eccezione di <code>UserException</code>.</p>
+<p>Ad ogni utente è associato un saldo in una valuta, per esempio in Euro. Inizialmente, il saldo di un nuovo utente è pari a zero. Un utente può aggiungere del denaro al suo saldo utilizzando il metodo <code>addToBalance()</code> che accetta come parametri l’identificativo dell’utente e la quantità di denaro da aggiungere. Per conoscere il saldo di un utente, è possibile utilizzare il metodo <code>getBalance()</code> che accetta come parametro l’identificativo dell’utente. Entrambi i metodi lanciano un’eccezione di <code>UserException</code> se l’identificativo dell’utente non è valido.</p>
+<h2 id="r3-portafoglio">R3: Portafoglio</h2>
+<p>Ogni utente ha un portafoglio di titoli già acquistati in precedenza. Il portafoglio contiene l’elenco dei titoli acquistati e la loro quantità. Inizialmente il portafoglio è vuoto. L’utente può aggiungere al proprio portafoglio i titoli che già possiede utilizzando il metodo <code>addToWallet()</code>, che accetta come parametri l’identificativo dell’utente, il codice del titolo e la corrispondente quantità. Nel caso in cui l’identificativo dell’utente non sia valido, il metodo lancia un’eccezione di <code>UserException</code>. Nel caso in cui il codice del titolo non sia valido, il metodo lancia un’eccezione di <code>StockException</code>. Si assuma che la quantità sia sempre maggiore di zero. Nel caso in cui il titolo sia già presente nel portafoglio, la nuova quantità deve essere sommata a quella precedente.</p>
+<p>Dato l’identificativo di un utente, è possibile ottenere una collezione di stringhe corrispondenti ai suoi titoli in portafoglio utilizzando il metodo <code>getWallet</code>. Ogni titolo in portafoglio è rappresentato da una stringa con il seguente formato: <code>&quot;[codice]: [quantità]&quot;</code>. Nel caso in cui l’identificativo dell’utente non sia valido, il metodo lancia un’eccezione di <code>UserException</code>.</p>
+<h2 id="r4-negoziazione">R4: Negoziazione</h2>
+<p>Un utente può mettere in vendita una certa quantità di un titolo in suo possesso utilizzando il metodo <code>addAsk()</code>, che accetta come parametri l’identificativo dell’utente, il codice del titolo che si vuole negoziare, la quantità che si desidera vendere ed il prezzo minimo che l’utente è disposto ad accettare per ogni titolo. I titoli messi in vendita devono essere rimossi dal portafoglio dell’utente. Nel caso in cui l’identificativo dell’utente non sia valido, il metodo lancia un’eccezione di <code>UserException</code>. Nel caso in cui il codice del titolo non sia valido, il metodo lancia un’eccezione di <code>StockException</code>. Nel caso in cui l’utente non disponga di una quantità sufficiente del titolo che vorrebbe vendere, il metodo lancia un’eccezione di <code>WalletException</code>.</p>
+<p>Dato un titolo, è possibile ottenere una collezione di stringhe corrispondenti alle proposte di vendita attualmente attive utilizzando il metodo <code>getBook()</code>, che accetta come parametro il codice di un titolo. Le proposte di vendita sono rappresentate da una stringa con il seguente formato: <code>&quot;[identificativo utente]: [quantità]@[prezzo mimino]&quot;</code>. La collezione è ordinata in modo crescente per prezzo minimo, quindi in modo decrescente per quantità. Nel caso in cui il codice del titolo non sia valido, il metodo lancia un’eccezione di <code>StockException</code>.</p>
+<p>Un utente può tentare di acquistare un titolo utilizzando il metodo <code>executeBid()</code>, che accetta come parametri l’identificativo dell’utente che effettua la proposta d’acquisto, il codice del titolo, la quantità richiesta ed il prezzo massimo che è disposto a spendere per ogni titolo.</p>
+<p>Nel caso in cui l’identificativo dell’utente non sia valido, il metodo lancia un’eccezione di <code>UserException</code>. Nel caso in cui il codice del titolo non sia valido, il metodo lancia un’eccezione di <code>StockException</code>. Nel caso in cui l’utente non disponga di un saldo sufficiente a coprire il prezzo massimo, che si ottiene moltiplicando il numero dei titoli richiesti per il prezzo massimo d’acquisto di un titolo, dell’operazione, il metodo lancia un’eccezione di <code>BalanceException</code>.</p>
+<p>Il metodo ritorna <code>true</code> se la proposta d’acquisto è eseguita, <code>false</code> in caso contrario. La proposta d’acquisto si intende eseguita se il numero di titoli attualmente in vendita ad un prezzo uguale o inferiore al prezzo massimo di acquisto è maggiore od uguale alla quantità richiesta. In tal caso è necessario aggiornare il saldo degli utenti coinvolti, aggiungere i titoli al portafoglio dell’acquirente e rimuoverli dalle proposte di vendita.</p>
+<p><strong>Attenzione:</strong> il prezzo complessivo d’acquisto si ottiene dalla somma del prezzo minimo moltiplicato per la quantità in vendita per ogni proposta di vendita considerata per raggiugere la quantità richiesta. Le proposte di vendita devono essere valutate nello stesso ordine in cui sono ritornate dal metodo <code>getBook()</code>. Per l’ultima proposta considerata la quantità effettivamente comprata potrebbe essere inferiore a quella in vendita: in tal caso è necessario aggiornare la quantità di titoli ancora disponibili per quella proposta di vendita.</p>
+<h2 id="r5-statistiche">R5: Statistiche</h2>
+<p>Sono definiti i seguenti metodi per raccogliere statistiche:</p>
+<ul>
+<li><p><code>countActiveWallets()</code> ritorna il numero di utenti aventi almeno un titolo nel loro portafoglio.</p></li>
+<li><p><code>countAskedStocks()</code> ritorna il numero di titoli con almeno una proposta di vendita attiva.</p></li>
+<li><p><code>stocksPerUsers()</code> restituisce una mappa che riporta come chiavi gli identificativi degli utenti del sistema e come valori il numero di titoli distinti presenti nel loro portafoglio.</p></li>
+</ul>
+<!--
+- `pricePerStocks()` restituisce una mappa che riporta come chiavi il codice dei titoli disponibili e come valori il prezzo medio di vendita del titolo, calcolato con una media pesata sulla quantità dei titoli in vendita. Non si considerino i titoli senza proposte di vendita. **Suggerimento:** si utilizzi il collettore `averagingWeighted` presente nella classe `StockExchange`.
+-->
+</body>
+</html>
