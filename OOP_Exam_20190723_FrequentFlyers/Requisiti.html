@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+
+
+
+<title>Frequent Flyers</title>
+<link href=".css.css" rel="stylesheet" type="text/css">
+<style>
+@media print {  /* adjusted to print the html to a single-page pdf */
+body {
+	font-size: 10pt;
+}
+</style>
+</head>
+<body>
+
+
+<h1>Frequent Flyers</h1>	
+<p>
+Il programma simula la gestione di frequent flyers.
+Tutte le classi si trovano nel package <b>it.polito.op.frequentFlyers</b> e la classe principale è <b>FrequentFlyers</b>.
+Le eccezioni sono lanciate mediante la classe <b>FFException</b>.
+La classe  <b>TestApp</b>  nel package  example contiene un esempio.
+<p>
+La documentazione JDK è accessibile all'URL <a href="https://oop.polito.it/api/index.html">https://oop.polito.it/api/index.html</a>. 
+
+</p>
+
+<h2>R1: Alleanze e compagnie aeree </h2>  
+
+Il metodo <b>addAlliance(String, String...)</b> introduce una nuova alleanza con l'elenco delle compagnie aeree aderenti.
+Il primo parametro è il nome dell'alleanza e gli altri sono i nomi delle compagnie. 
+Lancia un'eccezione se il nome dell'alleanza è duplicato o se una delle compagnie risulta già aderente ad un'altra alleanza.
+<p>
+Il metodo <b>getAllianceName(String)</b> dato il nome di una compagnia fornisce l'alleanza di appartenenza.
+<p>
+Il metodo <b>setMultiplier(int, String...)</b> stabilisce il moltiplicatore per un elenco di alleanze. 
+Inizialmente il moltiplicatore di un'alleanza vale 10.
+<p>
+Il metodo <b>getMultiplier(String)</b> dato il nome di un'alleanza fornisce il moltiplicatore.
+I moltiplicatori sono usati nel requisito <a href="#R4">R4</a>.
+
+<h2>R2: Voli </h2> 
+
+Il metodo <b>addFlight(String, String, int, int)</b> introduce un nuovo volo: il primo parametro è il codice univoco del volo,
+il secondo è il nome della compagnia aerea, il terzo è il prezzo e il quarto è il numero di miglia coperte dal volo.
+Lancia un'eccezione se la compagnia non è definita.
+<p>
+Il metodo <b>getNofFlights(String)</b> dato il nome di un'alleanza fornisce il numero di voli compiuti dalle compagnie 
+appartenenti all'alleanza.
+<p>
+Il metodo <b>getAverageNofMilesPerFlight(String)</b> dato il nome di un'alleanza fornisce il valore medio arrotondato
+delle miglia relative ai voli compiuti dalle compagnie appartenenti all'alleanza.
+ 
+<h2>R3: Frequent flyers </h2> 
+
+Il metodo <b>addFrequentFlyer(String, String...)</b> introduce il codice univoco (primo parametro) di un frequent flyer e
+indica i nomi delle alleanze alle quali partecipa. Lancia un'eccezione se un'alleanza non è definita.
+<p>
+Il metodo <b>getNOfFF(String)</b> dato il nome di un'alleanza fornisce il numero dei suoi frequent flyers.
+
+<h2 id="R4">R4: Viaggi, punti e sconti </h2> 
+
+Il metodo <b>addJourney(String, String...)</b> definisce un viaggio: il primo parametro è il codice del frequent flyer e
+il secondo parametro è l'elenco dei codici dei voli che costituiscono il viaggio.
+Il metodo fornisce un codice viaggio intero progressivo a partire da 1 incluso.
+Il metodo lancia un'eccezione se ci sono voli effettuati da compagnie che non fanno parte delle alleanze associate al
+frequent flyer.
+<p>
+Un viaggio ha un numero di punti pari alla somma delle miglia dei voli inclusi nel viaggio.
+Questi punti si possono leggere con il metodo <b>getJourneyPoints(int)</b> dato il codice viaggio.
+L'esecuzione di addJourney aggiunge questi punti ai punti del frequent flyer.
+<p>
+Il metodo <b>getFFPoints(String)</b> dato il codice di un frequent flyer fornisce il numero dei suoi punti; 
+ogni volta che viene definito un viaggio vengono accumulati i punti il viaggiatore frequent flyer;
+inizialmente i punti di un viaggiatore sono 0.
+<p>
+Il metodo <b>getJourneyPrice(int)</b> dato un codice viaggio fornisce l'importo complessivo 
+come somma dei prezzi dei voli inclusi nel viaggio.
+<p>
+Il metodo <b>addJourneyWithPoints(String, int, String...)</b>, è una variante del metodo <i>addJourney()</i>, 
+permette al frequent flyer di ottenere uno sconto sull'importo del viaggio usando i punti indicati dal secondo parametro. 
+
+Lo sconto consiste nell'avere uno dei voli inclusi nel viaggio gratuito: 
+il numero dei punti deve essere esattamente pari alle miglia del volo
+moltiplicate per il moltiplicatore relativo all'alleanza di cui fa parte la compagnia che effettua il volo. 
+Il primo volo (nell'ordine in cui sono passati come parametri) che rende soddisfatta la condizione precedente è quello gratuito
+I punti del viaggio ed il prezzo del viaggio sono calcolati escludendo il volo gratuito.
+
+Il metodo lancia un'eccezione se ci sono voli compiuti da compagnie che non fanno parte delle alleanze associate al
+frequent flyer. Inoltre lancia un'eccezione 
+se il numero di punti è maggiore di quelli posseduti dal frequent flyer o 
+se non c'è corrispondenza con alcun volo.
+L'esecuzione del metodo toglie i punti usati da quelli del frequent flier a aggiunge i punti corrispondenti
+alle miglia relative ai voli pagati (escluso quindi il volo gratuito).
+<p>
+I metodi <i>getJourneyPrice()</i> e <i>getJourneyPoints()</i> sono applicabili anche ai viaggi creatri tramite la variante; 
+in tale caso il volo gratuito non conta né per l'importo né per i punti.
+<p>
+Il metodo <b>pointsForFreeFlight(String)</b> indica quanti punti occorrono per avere gratis il volo passato come parametro: 
+il numero dei punti è pari al numero di miglia del volo moltiplicato per il moltiplicatore relativo all'alleanza di cui fa parte la compagnia che compie il volo. 
+
+
+<h2 id="R5">R5: Statistiche </h2> 
+<p>
+Il metodo <b>listOfFlightIdsPerPrice()</b> fornisce una mappa che ha per chiavi i prezzi dei voli (in ordine decrescente) e per valore
+la lista dei codici dei voli (ordinati alfabeticamente) che hanno tali prezzi. 
+<p>
+Il metodo <b>nOfJourneysPerNofFlights()</b> fornisce una mappa che dà il numero di viaggi con lo stesso numero di voli.
+Le chiavi sono i numeri di voli ordinati in senso crescente.
+		
+
+
+</body>
+</html>
